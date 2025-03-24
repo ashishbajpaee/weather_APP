@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:weather_app/weather_forecast_item.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 class WeatherScreen extends StatefulWidget {
@@ -20,9 +21,26 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
       String cityName = 'London';
-      final res = await http.get(
-        Uri.parse('http://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$openWeatherAPIKey'),
-      );
+
+
+      String apiKey = dotenv.env['OPENWEATHER_API_KEY'] ?? '';
+      
+      if (apiKey.isEmpty) throw 'API Key is missing. Check .env file.';
+
+
+
+//       final res = await http.get(
+//         // Uri.parse('http://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$openWeatherAPIKey'),
+//  Uri.parse('https://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$apiKey'),
+     
+
+//       );
+
+final res = await http.get(
+  Uri.parse('https://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$openWeatherAPIKey'),
+);
+
+
       final data = jsonDecode(res.body);
       if (data['cod'] != '200') {
         throw 'An unexpected Error occurred';
